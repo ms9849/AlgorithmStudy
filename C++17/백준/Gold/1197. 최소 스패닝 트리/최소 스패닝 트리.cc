@@ -7,76 +7,58 @@
 
 using namespace std;
 
-int iV{}, iE{};
+int iN, iE;
 
-int iParent[10001] = { 0, };
+vector<pair<int, int>> vecGraphs[10001] = {};
 
-int iCnt = 0;
-
-vector<pair<pair<int, int>, int>> vecEdges = {};
-
-int Find(int iStartNode)
-{
-	if (iStartNode != iParent[iStartNode])
-		iParent[iStartNode] = Find(iParent[iStartNode]);
-
-	return iParent[iStartNode];
-}
-
-bool Union(int iLhs, int iRhs)
-{
-	int iLhsParent = Find(iLhs);
-	int iRhsParent = Find(iRhs);
-
-	if (iLhsParent > iRhsParent)
-		iParent[iLhsParent] = iRhsParent;
-	else if (iLhsParent < iRhsParent)
-		iParent[iRhsParent] = iLhsParent;
-	else
-		return false;
-
-	return true;
-}
+int iVisited[10001] = { 0, };
+int iCount = 0;
+int iMinCost = 0;
 
 int main(void* pArg)
 {
-	cin >> iV >> iE;
-
-	int iMinCost = 0;
-
-	for (int i = 1; i <= iV;++i)
-	{
-		iParent[i] = i;
-	}
+	cin >> iN >> iE;
 
 	for (int i = 0; i < iE; ++i)
 	{
 		int iSour, iDest, iCost;
+
 		cin >> iSour >> iDest >> iCost;
 
-		vecEdges.push_back(make_pair(make_pair(iSour, iDest), iCost));
+		vecGraphs[iSour].emplace_back(make_pair(iDest, iCost));
+		vecGraphs[iDest].emplace_back(make_pair(iSour, iCost));
 	}
-	
-	//비용순 정렬
-	sort(vecEdges.begin(), vecEdges.end(), [](pair<pair<int, int>, int> lhs, pair<pair<int, int>, int> rhs)->bool {
-		return lhs.second < rhs.second;
-		});
 
+	//프림 알고리즘 구현부
+	// cost, 정점 순
+	priority_queue < pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>> > pq;
+	pq.emplace(make_pair(0, 1));
 
-	for (auto iter : vecEdges)
+	while (iCount < iN)
 	{
-		if (iCnt == iV - 1)
-			break;
+		//가장 싼 간선이 가장 위에 있으니까..
+		int iCost = pq.top().first;
+		int iVisitNode = pq.top().second;
+	
+		pq.pop();
 
-		if (Union(iter.first.first, iter.first.second))
+		if (iVisited[iVisitNode] == true)
+			continue;
+
+		iVisited[iVisitNode] = true;
+		iMinCost += iCost;
+		iCount++;
+
+		for (auto& iter : vecGraphs[iVisitNode])
 		{
-			iMinCost += iter.second;
-			iCnt++;
+			int iCost = iter.second;
+			int iNextNode = iter.first;
+
+			if(!iVisited[iNextNode])
+				pq.push(make_pair(iCost, iNextNode));
 		}
 	}
-	
-
-	cout << iMinCost;
+	cout << iMinCost << "\n";
 
 	return 0;
 }
