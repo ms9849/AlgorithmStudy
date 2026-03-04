@@ -1,71 +1,58 @@
 #include <iostream>
-#include <vector>
-#include <stack>
-#include <queue>
-#include <map>
-#include <algorithm>
 
 using namespace std;
 
-int iN{};
-int iE{};
-
-long long iGraph[101][101] = {0,};
-
-void Find_Path()
-{
-	for (int i = 1; i <= iN; ++i) // 거쳐가는 정점
-	{
-		for (int j = 1; j <= iN; ++j) // 출발 정점
-		{
-			for (int k = 1; k <= iN; ++k) // 도착 정점
-			{
-				if (j == k || i == k || i == j)
-					continue;
-
-				if (iGraph[j][k] > iGraph[j][i] + iGraph[i][k])
-					iGraph[j][k] = iGraph[j][i] + iGraph[i][k];
-			}
-		}
-	}
-}
+long long iDist[101][101] = { };
 
 int main(void* pArg)
 {
-	cin >> iN;
-	cin >> iE;
+	int iN, iM;
+
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+
+	cin >> iN >> iM;
+
+	for (int i = 0; i <= 100; ++i)
+		for (int j = 0; j <= 100; ++j)
+			iDist[i][j] = 1e9;
 
 	for (int i = 1; i <= iN; ++i)
-	{
-		for (int j = 1; j <= iN; ++j)
-		{
-			if (i == j) continue;
+		iDist[i][i] = 0;
 
-			iGraph[i][j] = 98765432;
-		}
-	}
-
-	for (int i = 0; i < iE; ++i)
+	for (int i = 0; i < iM; ++i)
 	{
-		int iSour, iDest;
-		long long iCost;
+		int iSour, iDest, iCost;
 
 		cin >> iSour >> iDest >> iCost;
 
-		iGraph[iSour][iDest] = min(iGraph[iSour][iDest], iCost);
+		if (iDist[iSour][iDest] > iCost)
+			iDist[iSour][iDest] = iCost;
 	}
 
-	Find_Path();
+	for (int k = 1; k <= iN; ++k)
+	{
+		for (int i = 1; i <= iN; ++i)
+		{
+			for (int j = 1; j <= iN; ++j)
+			{
+				if (iDist[i][j] > iDist[i][k] + iDist[k][j])
+					iDist[i][j] = iDist[i][k] + iDist[k][j];
+
+			}
+		}
+	}
 
 	for (int i = 1; i <= iN; ++i)
 	{
 		for (int j = 1; j <= iN; ++j)
 		{
-			if (iGraph[i][j] == 98765432)
-				cout << "0" << " ";
+			if (iDist[i][j] == 1e9)
+				cout << "0 ";
 			else
-				cout << iGraph[i][j] << " ";
+				cout << iDist[i][j] << " ";
 		}
+
 		cout << "\n";
 	}
 
