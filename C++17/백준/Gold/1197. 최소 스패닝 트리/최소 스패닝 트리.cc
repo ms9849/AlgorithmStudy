@@ -1,64 +1,77 @@
 #include <iostream>
 #include <vector>
-#include <stack>
-#include <queue>
-#include <map>
 #include <algorithm>
 
 using namespace std;
 
-int iN, iE;
+int iV, iE;
 
-vector<pair<int, int>> vecGraphs[10001] = {};
+//크루스칼은.. 유니온 파인드 연산을 메인으로 하지?..
+//간선의 시작점과 도착점을 Union 연산하여 다른 그룹이라면 간선 ++ 하고 비용도 더하기.
+//이렇게 채워진 간선들이 iV-1개라면.. 끝냄.
 
-int iVisited[10001] = { 0, };
+int iParent[10001] = { 0, };
+int iSum = 0;
 int iCount = 0;
-int iMinCost = 0;
+
+vector<pair<pair<int, int>, int>>  vecEdges = {};
+
+int Find(int iNum)
+{
+	if (iParent[iNum] != iNum)
+		iParent[iNum] = Find(iParent[iNum]);
+
+	return iParent[iNum];
+}
+
+bool Union(int iLhs, int iRhs)
+{
+	int iLhsParent = Find(iLhs);
+	int iRhsParent = Find(iRhs);
+
+	if (iLhsParent == iRhsParent)
+		return false;
+	else if (iLhsParent < iRhsParent)
+		iParent[iRhsParent] = iLhsParent;
+	else if (iLhsParent > iRhsParent)
+		iParent[iLhsParent] = iRhsParent;
+
+	return true;
+}
 
 int main(void* pArg)
 {
-	cin >> iN >> iE;
+	cin >> iV >> iE;
+
+	for (int i = 0; i <= 10000; ++i)
+		iParent[i] = i;
 
 	for (int i = 0; i < iE; ++i)
 	{
 		int iSour, iDest, iCost;
 
 		cin >> iSour >> iDest >> iCost;
-
-		vecGraphs[iSour].emplace_back(make_pair(iDest, iCost));
-		vecGraphs[iDest].emplace_back(make_pair(iSour, iCost));
+		
+		vecEdges.emplace_back(make_pair(make_pair(iSour, iDest), iCost));
 	}
 
-	//프림 알고리즘 구현부
-	// cost, 정점 순
-	priority_queue < pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>> > pq;
-	pq.emplace(make_pair(0, 1));
+	sort(vecEdges.begin(), vecEdges.end(), 
+		[](pair<pair<int, int>, int> Lhs, pair<pair<int, int>, int> Rhs)->bool {
+			return Lhs.second < Rhs.second;
+		});
 
-	while (iCount < iN)
+	for (auto& iter : vecEdges)
 	{
-		//가장 싼 간선이 가장 위에 있으니까..
-		int iCost = pq.top().first;
-		int iVisitNode = pq.top().second;
-	
-		pq.pop();
+		bool bResult = Union(iter.first.first, iter.first.second);
 
-		if (iVisited[iVisitNode] == true)
-			continue;
-
-		iVisited[iVisitNode] = true;
-		iMinCost += iCost;
-		iCount++;
-
-		for (auto& iter : vecGraphs[iVisitNode])
+		if (bResult == true)
 		{
-			int iCost = iter.second;
-			int iNextNode = iter.first;
-
-			if(!iVisited[iNextNode])
-				pq.push(make_pair(iCost, iNextNode));
+			++iCount;
+			iSum += iter.second;
 		}
 	}
-	cout << iMinCost << "\n";
+
+	cout << iSum << "\n";
 
 	return 0;
 }
