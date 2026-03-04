@@ -1,8 +1,8 @@
 #include <iostream>
 using namespace std;
 
-int dp[1002][1002] = {};
-int iMax = 0;
+int dp[1001][1001] = {0, };
+int iMax = -1;
 
 int main(void* pArg)
 {
@@ -14,18 +14,17 @@ int main(void* pArg)
 	{
 		for (int j = 0; j < strDest.size(); ++j)
 		{
+			int iValue = {};
+
 			if (strSour[i] == strDest[j])
-			{
-				dp[i + 1][j + 1] = dp[i][j] + 1;
-			
-				if (dp[i + 1][j + 1] > iMax)
-					iMax = dp[i + 1][j + 1];
-			}
+				iValue = dp[i + 1][j + 1] = dp[i][j] + 1;
 			else
-				dp[i + 1][j + 1] = max(dp[i][j+1], dp[i+1][j]);
+				iValue = dp[i + 1][j + 1] = max(dp[i][j + 1], dp[i + 1][j]);
+		
+			if (iValue > iMax)
+				iMax = iValue;
 		}
 	}
-
 
 	cout << iMax << "\n";
 
