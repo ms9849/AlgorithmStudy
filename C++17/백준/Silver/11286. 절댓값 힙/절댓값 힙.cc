@@ -17,7 +17,7 @@ int main(void* pArg)
 
 	cin >> iN;
 
-	auto cmp = [](const int& lhs, const int& rhs)->bool {
+	auto cmp = [](int& lhs, int& rhs)->bool {
 		if (abs(lhs) == abs(rhs))
 			return lhs > rhs;
 		else
