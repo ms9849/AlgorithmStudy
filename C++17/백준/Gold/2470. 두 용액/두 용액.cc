@@ -7,53 +7,55 @@
 
 using namespace std;
 
-vector<int> iNums;
+int iN;
+
+vector<int> vecNums = {};
 
 int main(void* pArg)
 {
-	int iN;
 	cin >> iN;
+
+	int iLow = 0;
+	int iHigh = iN - 1;
 
 	for (int i = 0; i < iN; ++i)
 	{
 		int iSour;
 		cin >> iSour;
 
-		iNums.push_back(iSour);
+		vecNums.push_back(iSour);
 	}
 
-	sort(iNums.begin(), iNums.end(), [](int iLhs, int iRhs)->bool {
-		return iLhs < iRhs;
+	sort(vecNums.begin(), vecNums.end(), [](int lhs, int rhs)->bool {
+		return lhs < rhs;
 	});
 
-	int iResultLessIdx, iResultGreaterIdx;
-	int iMin = 2000000001;
+	int iResultLow = {}, iResultHigh = {};
+	int iMin = 2000000010;
 
-	int iLessIdx = 0;
-	int iGreaterIdx = iN - 1;
-
-	while (iLessIdx < iGreaterIdx)
+	while (iLow < iHigh)
 	{
-		int iSum = iNums[iLessIdx] + iNums[iGreaterIdx];
-
-		if (abs(iSum) <= iMin)
+		if (abs(vecNums[iLow] + vecNums[iHigh]) < abs(iMin))
 		{
-			iResultLessIdx = iLessIdx;
-			iResultGreaterIdx = iGreaterIdx;
-			iMin = abs(iSum);
+			iResultLow = iLow;
+			iResultHigh = iHigh;
+			iMin = vecNums[iLow] + vecNums[iHigh];
 		}
 
-		if (iSum < 0)
+		if (vecNums[iLow] + vecNums[iHigh] > 0)
 		{
-			iLessIdx++;
+
+			iHigh--;
 		}
-		else if (iSum > 0)
-			iGreaterIdx--;
+		else if (vecNums[iLow] + vecNums[iHigh] < 0)
+		{
+			iLow++;
+		}
 		else
 			break;
 	}
 
-	cout << iNums[iResultLessIdx] << " " << iNums[iResultGreaterIdx];
+	cout << vecNums[iResultLow] << " " << vecNums[iResultHigh] << "\n";
 
 	return 0;
 }
