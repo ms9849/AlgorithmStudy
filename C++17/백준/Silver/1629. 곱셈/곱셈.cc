@@ -9,9 +9,7 @@ using namespace std;
 
 long long Multi(long long iA, long long iB, long long iC)
 {
-	if (iB == 0)
-		return 1;
-	else if (iB == 1)
+	if (iB == 1)
 		return iA % iC;
 
 	int iResult = Multi(iA, iB / 2, iC);
