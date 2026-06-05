@@ -2,37 +2,32 @@
 #include <vector>
 
 using namespace std;
-
-int iNode[21] = {};
-int iVisited[21] = {};
-int iMax = {};
 int iTarget = {};
-int iResult = {};
-void Recursion(int iCurNum, int iCurNode)
+int iCount = 0;
+void Recursion(vector<int>& vecNumbers, int iCurNumber, int iDepth)
 {
-    if (iCurNode == iMax)
+    if(iDepth == vecNumbers.size())
     {
-        if (iCurNum == iTarget)
-            iResult++;
-        
+        if(iTarget == iCurNumber)
+        {
+            iCount++;   
+        }
         return;
+    
     }
+    
+    Recursion(vecNumbers, iCurNumber + vecNumbers[iDepth], iDepth+1);
 
-    Recursion(iCurNum + iNode[iCurNode], iCurNode + 1);
-    Recursion(iCurNum - iNode[iCurNode], iCurNode + 1);
+    iCurNumber - vecNumbers[iDepth];
+
+    Recursion(vecNumbers, iCurNumber - vecNumbers[iDepth], iDepth+1);
 }
 
 int solution(vector<int> numbers, int target) {
-
-    iMax = numbers.size();
+    int answer = 0;
     iTarget = target;
-
-    for (int i = 0; i < iMax; ++i)
-    {
-        iNode[i] = numbers[i];
-    }
-
-    Recursion(0, 0);
-
-    return iResult;
+    
+    Recursion(numbers, 0, 0);
+    
+    return iCount;
 }
