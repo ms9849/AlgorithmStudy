@@ -29,6 +29,7 @@ long long solution(int iNumber, vector<int> vecTimes) {
         if(iCanHandle >= iNumber)
         {
             iHigh = iMid-1;
+            iAnswer = iMid;
         }
         else if(iCanHandle < iNumber)
         {
@@ -37,5 +38,5 @@ long long solution(int iNumber, vector<int> vecTimes) {
     }
     
     
-    return iLow;
+    return iAnswer;
 }
