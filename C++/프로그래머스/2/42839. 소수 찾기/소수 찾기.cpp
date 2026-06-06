@@ -1,65 +1,69 @@
 #include <string>
 #include <vector>
-#include <map>
-#include "math.h"
+#include <unordered_map>
+#include <set>
 using namespace std;
 
-#define MAX_NUM 9999999
-// true라면 소수가 아님,
-// false라면 소수
-bool iArray[10000000] = {};
-vector<int> iArrayNums = {};
-map<int, int > Minority = {};
+/*
+최종 숫자에 붙이냐, 붙이지 않냐 2개의 상황만이 존재한다.
+소수인지 체크해야하고. -> 에라토스테네스의 체는 메모리 문제로 불가능할 것.
+1024개의 소수니까.. 그냥 브루트포스로 해결 가능
+*/
 int iVisited[10] = {};
-//에라토스테네스의 체로 미리 배열을 만들어두기?..
+vector<string> vecNumbers = {};
+set<int> setNumbers = {};
 
-void Recursion(string CurNum, int iDepth)
+void Recursion(int iMaxDepth, string strCurrent)
 {
-	if (CurNum != "" && stoi(CurNum) != 0 && iArray[stoi(CurNum)] == false)
-		Minority.emplace(stoi(CurNum), 1);
-
-	if (iDepth == iArrayNums.size())
-		return;
-
-	for (int i = 0; i < iArrayNums.size(); ++i)
-	{
-		if (false == iVisited[i])
-		{
-			iVisited[i] = 1;
-			Recursion(CurNum + (char)(iArrayNums[i] + '0'), iDepth + 1);
-			iVisited[i] = 0;
-		}
-	}
+    if(strCurrent.size() == iMaxDepth)
+    {
+        bool isMinor = { true };
+        int iNumber = stoi(strCurrent);
+        
+        for(int i=2; i<iNumber; ++i)
+        {
+            if(iNumber % i == 0)
+            {
+                isMinor = false;
+                break;
+            }
+        }
+        
+        if(true == isMinor && iNumber > 1)
+            setNumbers.emplace(iNumber);
+        
+        return;
+    }
+    
+    
+    string strOrigin = strCurrent;
+    for(int i=0; i<vecNumbers.size(); ++i)
+    {
+        if(iVisited[i] == 0)
+        {
+            iVisited[i] = 1;
+            Recursion(iMaxDepth, strOrigin + vecNumbers[i]);
+            iVisited[i] = 0;
+        }
+    }
+    
 }
 
-int solution(string numbers) {
-	int iSqrtMax = sqrt(MAX_NUM);
-	int iStart = 2;
-	iArray[1] = true;
+int solution(string strNumbers) {
 
-	while (iStart <= iSqrtMax)
-	{
-		int iCount = 2;
-
-		if (iStart != true)
-		{
-			while (iStart * iCount <= MAX_NUM)
-			{
-				iArray[iStart * iCount] = true;
-				iCount++;
-			}
-		}
-		
-		iStart++;
-	}
-
-
-	for (int i = 0; i < numbers.length(); ++i)
-	{
-		iArrayNums.push_back(numbers[i] - '0');
-	}
-
-	Recursion("", 0);
-
-	return Minority.size();
+    for(int i=0; i<strNumbers.size(); ++i)
+    {
+        vecNumbers.push_back(strNumbers.substr(i, 1));
+    }
+    
+    for(int i=1; i<=vecNumbers.size(); ++i)
+    {
+        for(int i=0; i<10; ++i)
+            iVisited[i] = 0;
+        
+        Recursion(i, "");
+    }
+    
+    
+    return setNumbers.size();
 }
