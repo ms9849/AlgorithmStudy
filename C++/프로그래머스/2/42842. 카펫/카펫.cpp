@@ -2,32 +2,41 @@
 #include <vector>
 
 using namespace std;
-/*
-가로가 무조건 기니까.. 가로부터 증가시키면 되겠네?
-*/
-int iWidthAnswer = {};
-int iHeightAnswer = {};
 
+/*
+2x + 2y = brown +4
+(x - 1) * (y - 1) = yellow
+xy - x -y + 1 = yellow
+
+x + y = brown /2 + 2 
+
+xy = yellow + (brown / 2 +2) - 1
+
+y = brown / 2 + 2 - x;
+*/
 vector<int> solution(int brown, int yellow) {
     vector<int> answer;
     
-    int iTotal = brown + yellow;
+    //brown은 8 이상.
+    //yellow는 1 이상.
+    //3x3이 제일 작은거겠지.
     
-    for(int i=3; i<=iTotal; ++i)
+    int iX = 3;
+    int iY = 3;
+    
+    while(((iX-2)*(iY-2) != yellow || (2*iX + 2*iY != brown + 4)))
     {
-        for(int j=3; j<=i; ++j)
+        if(iX >= iY+1)
+            iY++;
+        else
         {
-            int iCurrentBrown = i*2 + j*2 - 4;
-            int iCurrentYellow = (i-2) * (j-2);
-            
-            if(iCurrentBrown == brown && iCurrentYellow == yellow)
-            {
-                    answer.push_back(i);
-                    answer.push_back(j);
-                
-                    return answer;
-            }           
+            iX++;
+            iY = 3;
         }
     }
     
+    answer.push_back(iX);
+    answer.push_back(iY);
+    
+    return answer;
 }
