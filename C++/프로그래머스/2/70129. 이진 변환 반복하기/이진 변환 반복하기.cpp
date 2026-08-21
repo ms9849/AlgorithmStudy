@@ -1,57 +1,43 @@
 #include <string>
 #include <vector>
-#include <stack>
+#include <algorithm>
+#include <iostream>
+
 using namespace std;
 
-vector<int> DigitChange(string s) {
-	vector<int> vecResult = {};
-	vecResult.push_back(0);
-	vecResult.push_back(0);
-
-	while (s != "1")
-	{
-		string strResult = {};
-
-		for (int i = 0; i < s.length(); ++i)
-		{
-			if (s[i] == '1')
-				strResult += '1';
-			else
-				vecResult[1] += 1;
-		}
-
-		int iLength = strResult.length();
-
-		stack<char> st = {};
-		string strConvert = {};
-		while (1)
-		{
-			if (iLength >= 2)
-			{
-				st.push((iLength % 2) + '0');
-			}
-			else
-			{
-				st.push(iLength + '0');
-				break;
-			}
-
-			iLength /= 2;
-		}
-
-		s = {};
-		while (!st.empty())
-		{
-			s += st.top();
-			st.pop();
-		}
-		vecResult[0] += 1;
-	}
-
-	return vecResult;
-}
-
 vector<int> solution(string s) {
-	vector<int> answer = DigitChange(s);
-	return answer;
+    vector<int> answer;
+    int iSum = 0;
+    int iBinaryCount = 0;
+    
+    while(s != "1")
+    {
+        int iCount = 0;
+        int iLength = s.length();
+        string Temp = "";
+        
+        for(int i=0; i<iLength; ++i)
+        {
+            if(s[i] == '1')
+                iCount++;
+            else
+                iSum++;
+        }
+
+        while(iCount >= 1)
+        {
+            Temp += to_string( iCount % 2 );
+            iCount /= 2;
+        }
+        reverse(Temp.begin(), Temp.end());
+        
+        s = Temp;
+        
+        iBinaryCount++;
+    }
+    
+    answer.push_back(iBinaryCount);
+    answer.push_back(iSum);
+    
+    return answer;
 }
