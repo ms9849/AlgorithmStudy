@@ -1,45 +1,34 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 
 using namespace std;
+
 vector<int> solution(int n, vector<string> words) {
-	//몇번째 사람이 탈락하는지, 몇번쨰 턴에서?
-	vector<int> answer = { 0,0 };
-	string strPreWord = {};
-	map<string, int> mapWordCounter = {};
-
-	int iCount = 1;
-
-	for(auto& iter : words)
-	{
-		if (mapWordCounter[words[iCount-1]] != 0 || 
-			(iCount != 1 && strPreWord[strPreWord.size()-1] != iter[0]))
-		{
-			if (iCount % n == 0)
-			{
-				answer[0] = n;
-				answer[1] = iCount / n;
-			}
-			else
-			{
-				answer[0] = iCount % n;
-				answer[1] = iCount / n + 1;
-			}
-
-
-			break;
-		}
-
-		mapWordCounter[words[iCount-1]] = 1;
-		strPreWord = words[iCount-1];
-
-		iCount++;
-	}
-
-	return answer;
+    vector<int> answer = {};
+    unordered_map<string, int> map = {};
+    
+    int iLength = words.size();
+    char cEnd = ' ';
+    
+    for(int i=0; i<iLength; ++i)
+    {   
+        // 이미 나왔거나, 끝말잇기가 성립 안한다면
+        if(map[words[i]] != 0 || (cEnd != words[i][0]) && cEnd != ' ')
+        {
+            answer.push_back(i % n + 1);
+            answer.push_back(i / n + 1);
+            return answer;
+        }
+        
+        // 문자열 길이.
+        cEnd = words[i][words[i].length()-1];
+        map[words[i]]++;
+    }
+    
+    answer.push_back(0);
+    answer.push_back(0);
+    
+    return answer;
 }
-
-
-
