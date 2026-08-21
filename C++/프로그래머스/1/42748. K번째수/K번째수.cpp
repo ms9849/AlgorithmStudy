@@ -7,19 +7,30 @@ using namespace std;
 vector<int> solution(vector<int> array, vector<vector<int>> commands) {
     vector<int> answer;
     
-    //증감 연산자를 앞에두면 어셈블리상에서 약간 빠르고 컴파일에러를 잘잡아주고..
-    for(int i=0; i<commands.size(); ++i)
+    int iSize = commands.size();
+    
+    for(int i=0; i<iSize; ++i)
     {
-        vector<int> vecTargets ={};
+        //어디서부터 어디까지 자를래?
+        int iStart = commands[i][0] - 1;
+        int iEnd = commands[i][1] - 1;
+        //k번째 수.
+        int iK = commands[i][2] - 1;
         
-        for(int j=commands[i][0]-1; j<=commands[i][1]-1; ++j)
+        //자른 숫자들을 저장하기 위한 벡터 컨테이너.
+        vector<int> vecNums = {};
+        for(int j=iStart; j<=iEnd; ++j)
         {
-            vecTargets.push_back(array[j]);
+            vecNums.push_back(array[j]);
         }
         
-        sort(vecTargets.begin(), vecTargets.end());
-        answer.push_back(vecTargets[commands[i][2]-1]);
+        sort(vecNums.begin(), vecNums.end(), [](int ilhs, int irhs) -> bool         {
+            return ilhs < irhs;
+        });
+        
+        answer.push_back(vecNums[iK]);
     }
+    
     
     return answer;
 }
