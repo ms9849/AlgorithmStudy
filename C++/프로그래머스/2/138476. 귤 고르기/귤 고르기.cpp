@@ -1,39 +1,43 @@
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <algorithm>
-
 using namespace std;
+
 int solution(int k, vector<int> tangerine) {
-	int answer = { 0 };
-	map<int, int> TangerineSizes = {};
-
-	for(auto& iter : tangerine)
-	{
-		//사이즈 iter인 귤 갯수 1개 추가.
-		TangerineSizes[iter]++;
-	}
-
-	vector<pair<int, int>> vecPairs = {};
-	for (auto& iter : TangerineSizes)
-	{
-		//second가 갯수
-		vecPairs.push_back({ iter.first, iter.second });
-	}
-
-	sort(vecPairs.begin(), vecPairs.end(), [](pair<int, int> lhs, pair<int, int> rhs)->bool {
-		return lhs.second > rhs.second;
-		});
-
-	for (int i = 0; i < vecPairs.size(); ++i)
-	{
-		k -= vecPairs[i].second;
-
-		answer++;
-
-		if (k <= 0)
-			break;
-	}
-
-	return answer;
+    int answer = 0;
+    int iLength = tangerine.size();
+    
+    unordered_map<int, int> map ={};
+    vector<pair<int,int>> vecNums = {};
+    
+    for(int i=0; i<iLength; ++i)
+    {
+        //이렇게 추가하면.. 자동으로 추가되긴 하니까.
+        map[tangerine[i]]++;
+    }
+    
+    for(auto& iter : map)
+    {
+        //(크기, 그 크기가 몇번 나왔는지)
+        vecNums.push_back(make_pair(iter.first, iter.second));   
+    }
+    
+    //많이 나온 순대로 정렬.
+    sort(vecNums.begin(), vecNums.end(), [](pair<int,int> lhs, pair<int,int> rhs)->bool {
+       return lhs.second > rhs.second;
+    });
+    
+    iLength = vecNums.size();
+    
+    for(int i=0; i<iLength; ++i)
+    {
+        k-= vecNums[i].second;
+        answer++;
+        
+        if(k <= 0)
+            break;
+    }
+    
+    return answer;
 }
