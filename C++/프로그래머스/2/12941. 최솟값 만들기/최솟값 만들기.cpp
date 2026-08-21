@@ -1,39 +1,26 @@
 #include <iostream>
 #include <vector>
-#include <stack>
-#include <queue>
-#include <map>
 #include <algorithm>
-#include <string>
-#include <list>
-#include <set>
-
 using namespace std;
 
+/*
+같은 크기의 수를 곱한다면, 한쪽이 작아야 곱의 결과가 최대한 작아짐.
+-> 어떤 수식이 있다기보단.. 직관적 감각이긴 한데, 일단 이대로 가보자.
+*/
 int solution(vector<int> A, vector<int> B)
 {
-	int answer = 0;
+    int answer = 0;
 
-	sort(A.begin(), A.end());
-
-	sort(B.begin(), B.end(), [](int lhs, int rhs)->bool {
-		return lhs > rhs;
-	});
-
-	for (int i = 0; i < A.size(); ++i)
-	{
-		answer += A[i] * B[i];
-	}
-
-	return answer;
-}
-
-int main(void* pArg)
-{
-	ios::sync_with_stdio(false);
-	cin.tie(0);
-	cout.tie(0);
-
-	solution({1,2,3,4,5,6,7,8}, {1,2,3,4,5,6,7,8});
-	return 0;
+    sort(A.begin(), A.end());
+    sort(B.begin(), B.end(), [](int lhs, int rhs)->bool {
+       return lhs > rhs;
+    });
+    
+    int iNum = A.size();
+    for(int i=0; i<iNum; ++i)
+    {
+        answer += A[i] * B[i];
+    }
+    
+    return answer;
 }
