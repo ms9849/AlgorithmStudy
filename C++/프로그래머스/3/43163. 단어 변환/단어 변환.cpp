@@ -2,90 +2,51 @@
 #include <vector>
 
 using namespace std;
+/*
+1. 한 글자만 다르다면 방문 가능한 노드로 취급하고.
+2. 노드는 최대 50개. DFS로만 방문이 가능한데, 어차피 한글자 다른 부분만 방문 가능하니까.. 2^50은 안될 것 같은데? BFS로 가게되면 중간단계 visited 체크가 불가능해서 무한루프 가능성이 아주 큼.
+*/
 
-int iGraph[51][51] = {};
+
 int iVisited[51] = {};
-int ianswer = 999;
 
-void DFS(int iCurNode, int iTargetNode, int iDepth, int iMaxIdx)
+void DFS(const string& CurNode, const string& target, const vector<string>& words, int iLength, int iDepth, int& answer)
 {
-	if (iCurNode == iTargetNode)
-	{
-		if (iDepth < ianswer)
-		{
-			ianswer = iDepth;
-		}
-
-		return;
-	}
-
-	for (int i = 0; i < iMaxIdx; ++i)
-	{
-		if (i != iCurNode && iVisited[i] == 0 &&
-			iGraph[iCurNode][i] == 1)
-		{
-			iVisited[i] = 1;
-
-			DFS(i, iTargetNode, iDepth + 1, iMaxIdx);
-
-			iVisited[i] = 0;
-		}
-	}
+    if(CurNode == target && (answer == -1 || answer > iDepth))
+    {
+        answer = iDepth;
+        //도착했다면 여기서 더 탐색할 이유가 없음
+        return;
+    }
+    
+    for(int j=0; j< words.size(); ++j)
+    {
+        int iDiffCount = 0;
+        for(int i=0; i<iLength; ++i)
+        {
+            if(CurNode[i] != words[j][i])
+                iDiffCount++;
+        }
+        //방문할 수 있는 노드라면
+        if(iDiffCount == 1 && iVisited[j] != 1) 
+        {
+            iVisited[j] = 1;
+            DFS(words[j], target, words, iLength, iDepth + 1, answer);
+            //순회했다가 재방문하는거 고려.
+            iVisited[j] = 0;
+        }
+    }
+    
 }
 
 int solution(string begin, string target, vector<string> words) {
-	int iTargetIdx = -1;
-	int iCount = 0;
-	int iLength = begin.size();
-
-	//begin까지 포함하여 문자열 제작.
-	vector<string> WORDS = {};
-	WORDS.push_back(begin);
-
-	for (auto& iter : words)
-	{
-		WORDS.push_back(iter);
-	}
-	
-	//타겟, 도착점이 존재하는가?
-	for (auto& iter : WORDS)
-	{
-		if (iter == target)
-			iTargetIdx = iCount;
-
-		iCount++;
-	}
-
-	if (iTargetIdx == -1)
-		return 0;
-
-	//그래프 만들어줘야지
-	int iIdx = 0;
-	for (auto& strStart : WORDS)
-	{
-		int iVisitIdx = 0;
-		
-		for (auto& strVisit : WORDS)
-		{
-			int iDiffCount = 0;
-
-			for (int i = 0; i < iLength; ++i)
-			{
-				if (strVisit[i] != strStart[i])
-					iDiffCount++;
-			}
-
-			if (iDiffCount == 1)
-				iGraph[iIdx][iVisitIdx] = 1;
-
-			iVisitIdx++;
-		}
-
-		iIdx++;
-	}
-
-	iVisited[0] = 1;
-	DFS(0, iTargetIdx, 0, WORDS.size());
-
-	return ianswer;
+    int answer = -1;
+    
+    DFS(begin, target, words, target.length(), 0, answer);
+    
+    
+    if(answer == -1)
+        return 0;
+    
+    return answer;
 }
