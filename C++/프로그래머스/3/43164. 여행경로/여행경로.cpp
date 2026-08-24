@@ -43,11 +43,12 @@ void DFS(const string& Current, const vector<vector<string>>& tickets, stack<str
         
         DFS(vecVisitable[i].first, tickets, stAnswers, iDepth+1);
         
-        if (hasFinished)
-            return;
+        // if (hasFinished)
+        //     return;
         
         iVisited[vecVisitable[i].second] = 0;
-        stAnswers.pop();
+        if(!stAnswers.empty())
+            stAnswers.pop();
     }
 }
 
