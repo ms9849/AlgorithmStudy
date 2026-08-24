@@ -1,42 +1,33 @@
 #include <string>
 #include <vector>
-#include <algorithm>
+
 using namespace std;
 
-long long solution(int iNumber, vector<int> vecTimes) {
-    long long iAnswer = 0;
-    long long iLow = {};
-    long long iMid = {};
-    long long iHigh = {};
-    
-    sort(vecTimes.begin(), vecTimes.end());
-    
-    iLow = vecTimes[0] * (iNumber / vecTimes.size());
-    iHigh = vecTimes[vecTimes.size()-1] * iNumber;
-    
-    while(iLow <= iHigh)
+long long solution(int n, vector<int> times) {
+    unsigned long long answer = 0;
+    unsigned long long iMin = 1, iMax = 1000000000 * 1000000000;
+    unsigned long long iTime = -1;
+
+    while (iMin <= iMax)
     {
-        // overflow 방지.
-        iMid = (iLow + iHigh)/2;
-        
-        long long iCanHandle = {};
-        
-        for(auto& iter : vecTimes)
+        iTime = (iMin / 2) + (iMax / 2);
+        unsigned long long iSum = 0;
+
+        for (auto& iter : times)
         {
-            iCanHandle += iMid / iter;
+            iSum += iTime / iter;
         }
-        
-        if(iCanHandle >= iNumber)
+
+        if (iSum >= n)
         {
-            iHigh = iMid-1;
-            iAnswer = iMid;
+            answer = iTime;
+            iMax = iTime - 1;
         }
-        else if(iCanHandle < iNumber)
+        else
         {
-            iLow = iMid+1;
+            iMin = iTime + 1;
         }
     }
-    
-    
-    return iAnswer;
+
+    return answer;
 }
