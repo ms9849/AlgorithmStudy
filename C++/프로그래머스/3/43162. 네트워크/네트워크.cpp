@@ -3,38 +3,41 @@
 
 using namespace std;
 
+/* 방문 배열은 미리 만들어놓자. */
 int iVisited[201] = {};
-vector<vector<int>> vecMaps ={};
 
-void Recursion(int iCurNode, int iMax)
+void DFS(int iCurNode, const vector<vector<int>>& computers, int iNumComputers)
 {
+    //방문.
     iVisited[iCurNode] = 1;
     
-    for(int i=0; i<=iMax; ++i)
+    for(int i=0; i<iNumComputers; ++i)
     {
-        if(vecMaps[iCurNode][i] == 1 &&
-          iVisited[i] == 0 &&
-          i != iCurNode)
+        //1. 자기자신이 아닌 노드에 방문이 가능할때.
+        //2. 방문한 적이 없을때.
+        if(computers[iCurNode][i] == 1 && iCurNode != i &&
+          iVisited[i] == 0)
         {
-            Recursion(i, iMax);
+            //"DFS" 또 방문해.
+            DFS(i, computers, iNumComputers);
         }
     }
-
     
     return;
 }
 
 int solution(int n, vector<vector<int>> computers) {
-    int iAnswer = 0;
-    vecMaps = computers;
+    int answer = 0;
     
+    //n은 컴퓨터의 갯수.
     for(int i=0; i<n; ++i)
     {
-        if(iVisited[i] == 0)
+        if(!iVisited[i])
         {
-            Recursion(i, n-1);
-            iAnswer++;
+            DFS(i, computers, n);
+            answer++;
         }
     }
-    return iAnswer;
+    
+    return answer;
 }
