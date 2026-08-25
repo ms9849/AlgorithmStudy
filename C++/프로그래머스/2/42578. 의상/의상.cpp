@@ -1,23 +1,29 @@
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
+
 using namespace std;
 
-int solution(vector<vector<string>> vecClothes) {
-    int iAnswer = 1;
-    unordered_map<string, int> mapClothes = {};
+int solution(vector<vector<string>> clothes) {
+    int answer = 0;
 
-    for(auto& Cloth : vecClothes)
+    map<string,int> CountParts= {};
+    
+    for(auto& iter: clothes)
     {
-        //yellow_hat, headgear라면 headgear++.
-        mapClothes[Cloth[1]]++;
+        //headgear ++
+        CountParts[iter[1]]++;
     }
     
-    for(auto& iter : mapClothes)
+    for(auto& iter : CountParts)
     {
-        iAnswer *= (iter.second + 1);
+        if(answer == 0)
+            answer = iter.second + 1;
+        else
+            answer *= (iter.second + 1);
     }
-    iAnswer--;
     
-    return iAnswer;
+    answer--;
+    
+    return answer;
 }
