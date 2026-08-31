@@ -4,29 +4,36 @@
 using namespace std;
 
 int solution(vector<vector<int>> sizes) {
+    int answer = 0;
+    int iTemp = {};
+    int iSize = sizes.size();
     
-    for(auto& iter : sizes)
+    for(int i=0; i<iSize; ++i)
     {
-        //Swap 알고리즘.
-        //더 긴 길이가 0번째 인덱스에 오도록 처리한다.
-        if(iter[1] > iter [0])
+        //오른쪽이 왼쪽보다 크다면, 
+        if(sizes[i][0] < sizes[i][1])
         {
-            int iTemp = iter[0];
-            iter[0] = iter[1];
-            iter[1] = iTemp;
+            //swap
+            iTemp = sizes[i][1];
+            sizes[i][1] = sizes[i][0];
+            sizes[i][0] = iTemp;
         }
     }
     
-    int iWidthMax = {};
-    int iHeightMax = {};
+    int iLeftMax = -1;
+    int iRightMax = -1;
     
-    for(auto& iter : sizes)
+    for(int i=0; i<iSize; ++i)
     {
-        if(iter[0] > iWidthMax)
-            iWidthMax = iter[0];
-        if(iter[1] > iHeightMax)
-            iHeightMax = iter[1];
+        if(sizes[i][0] > iLeftMax)
+            iLeftMax = sizes[i][0];
+        
+        if(sizes[i][1] > iRightMax)
+            iRightMax = sizes[i][1];
     }
     
-    return iWidthMax * iHeightMax;
+    answer = iLeftMax * iRightMax;
+    
+    
+    return answer;
 }
