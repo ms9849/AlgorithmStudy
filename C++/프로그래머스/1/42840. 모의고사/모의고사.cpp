@@ -4,44 +4,35 @@
 using namespace std;
 
 vector<int> solution(vector<int> answers) {
-    vector<int> answer;
+    vector<int> answer = {};
+    vector<int> vecFirst = { 1,2,3,4,5 };
+    vector<int> vecSecond = { 2,1,2,3,2,4,2,5 };
+    vector<int> vecThird = { 3,3,1,1,2,2,4,4,5,5 };
+    vector<int> vecAnswers = {0,0,0};
+    vector<int> vecSizes = { 5, 8, 10 };
     
-    //1번 수포자
-    vector<int> vecFirst = { 1,2,3,4,5};   
-    int iAnswerFirst = {};
-    //2번 수포자
-    vector<int> vecSecond = {2,1,2,3,2,4,2,5};
-        int iAnswerSecond = {};
-    //3번 수포자
-    vector<int> vecThird = { 3, 3, 1, 1, 2, 2, 4, 4, 5, 5 };
-        int iAnswerThird = {};
+    int iSize = answers.size();
     
-    for(int i=0; i<answers.size(); ++i)
+    for(int i=0; i<iSize; ++i)
     {
-        if(answers[i] == vecFirst[i % vecFirst.size()])
-        {
-            iAnswerFirst++;
-        }
-        if(answers[i] == vecSecond[i % vecSecond.size()])
-        {
-            iAnswerSecond++;
-        }
+        if(answers[i] == vecFirst[i % vecSizes[0]])
+            vecAnswers[0]++;
         
-        if(answers[i] == vecThird[i % vecThird.size()])
-        {
-            iAnswerThird++;
-        }
+        if(answers[i] == vecSecond[i % vecSizes[1]])
+            vecAnswers[1]++;
+        
+        if(answers[i] == vecThird[i % vecSizes[2]])
+            vecAnswers[2]++;
     }
     
-    int iMax = iAnswerFirst > iAnswerSecond ? iAnswerFirst : iAnswerSecond;
-    iMax = iMax > iAnswerThird ? iMax : iAnswerThird;
+    int iMax = -1;
+    for(int i=0; i<3; ++i)
+        if(vecAnswers[i] > iMax)
+            iMax = vecAnswers[i];
     
-    if(iMax == iAnswerFirst)
-        answer.push_back(1);    
-    if(iMax == iAnswerSecond)
-        answer.push_back(2);    
-    if(iMax == iAnswerThird)
-        answer.push_back(3);
+    for(int i=0; i<3; ++i)
+        if(vecAnswers[i] == iMax)
+            answer.push_back(i+1);
     
     return answer;
 }
