@@ -1,69 +1,49 @@
 #include <string>
 #include <vector>
-#include <unordered_map>
 #include <set>
 using namespace std;
+//999 9999
 
-/*
-최종 숫자에 붙이냐, 붙이지 않냐 2개의 상황만이 존재한다.
-소수인지 체크해야하고. -> 에라토스테네스의 체는 메모리 문제로 불가능할 것.
-1024개의 소수니까.. 그냥 브루트포스로 해결 가능
-*/
-int iVisited[10] = {};
-vector<string> vecNumbers = {};
-set<int> setNumbers = {};
+set<int> s= {};
 
-void Recursion(int iMaxDepth, string strCurrent)
+bool IsPrime(int n)
 {
-    if(strCurrent.size() == iMaxDepth)
+    if(n <= 1)
+        return false;
+    
+    for(int i=2; i<n; ++i)
     {
-        bool isMinor = { true };
-        int iNumber = stoi(strCurrent);
-        
-        for(int i=2; i<iNumber; ++i)
-        {
-            if(iNumber % i == 0)
-            {
-                isMinor = false;
-                break;
-            }
-        }
-        
-        if(true == isMinor && iNumber > 1)
-            setNumbers.emplace(iNumber);
-        
-        return;
+        //소수니까.. 1과 자기자신을 제외한 약수가 없어야지.
+        if(n%i == 0)
+            return false;
     }
     
-    
-    string strOrigin = strCurrent;
-    for(int i=0; i<vecNumbers.size(); ++i)
-    {
-        if(iVisited[i] == 0)
-        {
-            iVisited[i] = 1;
-            Recursion(iMaxDepth, strOrigin + vecNumbers[i]);
-            iVisited[i] = 0;
-        }
-    }
-    
+    return true;
 }
 
-int solution(string strNumbers) {
+int iVisited[8] = {};
 
-    for(int i=0; i<strNumbers.size(); ++i)
+void DFS(string CurNum, const string& numbers)
+{
+    if(CurNum.length() != 0)
     {
-        vecNumbers.push_back(strNumbers.substr(i, 1));
+        if(IsPrime(stoi(CurNum)))
+            s.insert(stoi(CurNum));
     }
     
-    for(int i=1; i<=vecNumbers.size(); ++i)
+    for(int i=0; i<numbers.size(); ++i)
     {
-        for(int i=0; i<10; ++i)
+        if(iVisited[i] != 1)
+        {
+            iVisited[i] = 1;
+            DFS(CurNum + numbers[i], numbers);
             iVisited[i] = 0;
-        
-        Recursion(i, "");
+        }
     }
+}
+
+int solution(string numbers) {
+    DFS("" ,numbers);
     
-    
-    return setNumbers.size();
+    return s.size();
 }
