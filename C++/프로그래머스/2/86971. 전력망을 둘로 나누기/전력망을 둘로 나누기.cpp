@@ -1,69 +1,71 @@
+#include <cstring>
 #include <string>
 #include <vector>
-#include <set>
-#include <queue>
 
 using namespace std;
 
-int solution(int n, vector<vector<int>> wires) {
-    int iAnswer = -1;
-    int iLoseEdgeIdx = {};
-    int iEdgeNums = wires.size(); 
-    
-    for(int i=0; i<iEdgeNums; ++i)
+/*
+wires를 하나씩 없애가면서 dfs 2번 돌려서
+전력망 갯수 확인하고
+으어 끔찍해
+*/
+
+int iMap[101][101] = {};
+int iVisited[101] = {};
+int iNodeSize = {};
+
+void DFS(int iCurNode, int& iDepth)
+{
+    for (int i = 1; i <= iNodeSize; ++i)
     {
-        int iVisitedNodeCounter = {}; 
-        int iVisited[101] = {};
-        //i번째 인덱스의 간선은 쓸 수 없게 하기 위함.
-        iLoseEdgeIdx = i;
-    
-        //BFS 로직.
-        queue<int> q = {};
-        q.push(1);
-        iVisited[1] = 1;
-
-        while(!q.empty())
+        if (iVisited[i] == 0 && iMap[iCurNode][i] == 1)
         {
-            int iCurNode = q.front();
-            q.pop();
+            iVisited[i] = 1;
+            iDepth++;
+            DFS(i, iDepth);
+        }
+    }
+}
 
+int solution(int n, vector<vector<int>> wires) {
+    int answer = 99999999;
+    int iSize = wires.size();
+    iNodeSize = n;
 
-            int iIdx = 0;
-            for(auto& iter : wires)
+    for (int i = 0; i < iSize; ++i)
+    {
+        memset(iVisited, 0, sizeof(iVisited));
+        memset(iMap, 0, sizeof(iMap));
+        //전력망 하나씩 끊어서 저장.
+        for (int j = 0; j < iSize; ++j)
+        {
+            if (j != i)
             {
-                if(((iter[0] == iCurNode && iVisited[iter[1]] == 0))                         
-                   && iIdx != iLoseEdgeIdx)
-                {
-                    iVisited[iter[1]] = 1;
-                    q.push(iter[1]);
-                }
-
-                else if(((iter[1] == iCurNode && iVisited[iter[0]] == 0))                         
-                   && iIdx != iLoseEdgeIdx)
-                {
-                    iVisited[iter[0]] = 1;
-                    q.push(iter[0]);
-                }
-
-                iIdx++;
+                iMap[wires[j][0]][wires[j][1]] = 1;
+                iMap[wires[j][1]][wires[j][0]] = 1;
             }
         }
 
-         
-        int iCounter ={};
-        for(int i=1; i<=n; ++i)
+
+        vector<int> vecDepths = { 1,1 };
+        int iIdx = 0;
+
+        for (int i = 1; i <= n; ++i)
         {
-            if(iVisited[i] == 1)
-                iCounter++;
-            else
-                iCounter--;
+            if (0 == iVisited[i])
+            {
+                iVisited[i] = 1;
+                DFS(i, vecDepths[iIdx++]);
+            }
+
         }
-        if(iCounter < 0)
-            iCounter *= -1; 
-        
-        if(iCounter < iAnswer || iAnswer == -1)
-            iAnswer = iCounter;
+
+        int iDiff = abs(vecDepths[0] - vecDepths[1]);
+
+        if (iDiff < answer)
+            answer = iDiff;
     }
-    
-    return iAnswer;
+
+
+    return answer;
 }
