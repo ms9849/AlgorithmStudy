@@ -3,14 +3,22 @@
 
 using namespace std;
 
-int solution(int n) {
-    int iSum = 0;
-    
-    for(int i = 1; i<= n; ++i)
+int SumDivs(int n)
+{
+    int iAnswer = 0;
+    for(int i=1; i<=n; ++i)
     {
-        if(n%i==0)
-            iSum += i;
+        if(n%i == 0)
+            iAnswer += i;
     }
+    
+    return iAnswer;
+}
 
-    return iSum;
+int solution(int n) {
+    int answer = 0;
+    
+    answer = SumDivs(n);
+    
+    return answer;
 }
